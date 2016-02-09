@@ -66,4 +66,5 @@ begin
       config.stats_path = Rails.root.join('stats.json')
     end
   end
+rescue LoadError
 end
