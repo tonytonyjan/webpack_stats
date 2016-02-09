@@ -1,6 +1,4 @@
 # frozen-string-literal: true
-
-require 'webpack_stats/version'
 require 'json'
 
 module WebpackStats
