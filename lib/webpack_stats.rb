@@ -4,8 +4,8 @@ require 'json'
 module WebpackStats
   REGEXP = /(.+?)(?:-([0-9a-f]{20,}))?\.(\w+)/
 
-  @reload = defined?(::Rails) && ::Rails.env.production? ? false : true
-  @stats_path = defined?(::Rails) ? ::Rails.root.join('stats.json') : 'stats.json'
+  @reload = true
+  @stats_path = 'stats.json'
 
   class << self
     attr_accessor :reload, :stats_path, :splitter
@@ -47,18 +47,23 @@ module WebpackStats
 
   end
 
-  if defined? ::Rails
-    module Helper
-      def compute_asset_path source, options = {}
-        WebpackStats.assets[source] || super
-      end
+  module Helper
+    def compute_asset_path source, options = {}
+      WebpackStats.assets[source] || super
     end
   end
-
 end
 
-if defined? ::ActiveSupport
+begin
+  require 'active_support'
   ActiveSupport.on_load(:action_view) do
     include WebpackStats::Helper
+  end
+
+  ActiveSupport.on_load(:after_initialize) do
+    WebpackStats.configure do |config|
+      config.reload = Rails.env.production? ? false : true
+      config.stats_path = Rails.root.join('stats.json')
+    end
   end
 end
