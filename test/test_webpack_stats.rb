@@ -8,10 +8,6 @@ class TestWebpackStats < Minitest::Test
     end
   end
 
-  def test_version
-    assert defined? WebpackStats::VERSION
-  end
-
   def test_assets
     WebpackStats.configure do |config|
       config.splitter = nil
