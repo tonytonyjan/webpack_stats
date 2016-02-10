@@ -15,25 +15,22 @@ module WebpackStats
     end
 
     def assets
-      @reload ? load_assets : @assets ||= load_assets
+      load! if @reload || !@assets
+      @assets
     end
 
     def stats
-      @reload ? load_stats : @stats ||= load_stats
+      load! if @reload || !@stats
+      @stats
     end
 
-    def load_stats
-      JSON.parse File.read @stats_path
-    end
-
-    def load_assets
-      ret = {}
-      _stats = stats
-      _stats['assets'].each do |asset|
-        key, value = split_asset_name(_stats, asset['name'])
-        ret[key] = value
+    def load!
+      @stats = JSON.parse File.read @stats_path
+      @assets = {}
+      @stats['assets'].each do |asset|
+        key, value = split_asset_name(@stats, asset['name'])
+        @assets[key] = value
       end
-      ret
     end
 
     def split_asset_name stats, asset_name
@@ -62,7 +59,7 @@ begin
 
   ActiveSupport.on_load(:after_initialize) do
     WebpackStats.configure do |config|
-      config.reload = Rails.env.production? ? false : true
+      config.reload = !Rails.env.production?
       config.stats_path = Rails.root.join('stats.json')
     end
   end
