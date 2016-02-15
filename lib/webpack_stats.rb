@@ -25,11 +25,16 @@ module WebpackStats
     end
 
     def load!
-      @stats = JSON.parse File.read @stats_path
-      @assets = {}
-      @stats['assets'].each do |asset|
-        key, value = split_asset_name(@stats, asset['name'])
-        @assets[key] = value
+      if File.exists?(@stats_path)
+        @stats = JSON.parse(File.read(@stats_path))
+        @assets = {}
+        @stats['assets'].each do |asset|
+          key, value = split_asset_name(@stats, asset['name'])
+          @assets[key] = value
+        end
+      else
+        @stats = {}
+        @assets = {}
       end
     end
 
