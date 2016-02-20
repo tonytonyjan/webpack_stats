@@ -58,11 +58,10 @@ end
 
 begin
   require 'active_support'
-  ActiveSupport.on_load(:action_view) do
-    include WebpackStats::Helper
-  end
-
   ActiveSupport.on_load(:after_initialize) do
+    ActiveSupport.on_load(:action_view) do
+      include WebpackStats::Helper
+    end
     WebpackStats.configure do |config|
       config.reload = !Rails.env.production?
       config.stats_path = Rails.root.join('stats.json')
