@@ -1,6 +1,6 @@
 # webpack_stats
 
-A webpack stats loader for intergrating rails with wepack.
+A webpack stats loader for integrating rails with wepack.
 
 ## Install
 
@@ -11,7 +11,7 @@ gem 'webpack_stats'
 
 ## Usage
 
-It's dead easy to use, there is no new API since it just overwrite `#compute_asset_path` in `ActionView`. You can use every Rails assets API as usual, like `image_tag`, `asset_path`, etc. It will compute asset name correctlly due to your webpack stats file.
+It's dead easy to use, there is no new API since it just overwrite `compute_asset_path` in `ActionView`. You can use every Rails assets API as usual, like `image_tag`, `asset_path`, etc. It will compute asset name correctly due to your webpack stats file.
 
 To generate the stats file, simply execute `webpack --json`, or add the code below to `webpack.config.js`:
 
@@ -47,3 +47,21 @@ WebpackStats.configure do |config|
   }
 end
 ```
+
+## Integrate with Sprockets
+
+Though Sprockets is dated, sometimes you could install gems that built on Sprockets like [administrate](https://github.com/thoughtbot/administrate).
+
+To deal with the conflict, you have to take care of the ordering in `Gemfile`, for example:
+
+```ruby
+# Gemfile
+gem 'sprockets-rails'
+gem 'webpack_stats'
+
+# effect
+ActionView::Base.ancestors.first(4)
+# => [ActionView::Base, WebpackStats::Helper, Sprockets::Rails::Helper, Sprockets::Rails::Utils]
+```
+
+Thus, `compute_asset_path` will fallback to Sprockets version if it can't find the given asset name in webpack stats file, and vice versa if you reverse the ordering.
