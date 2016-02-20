@@ -1,4 +1,4 @@
-# webpack_stats
+# webpack_stats [![Build Status](https://travis-ci.org/tonytonyjan/webpack_stats.svg?branch=master)](https://travis-ci.org/tonytonyjan/webpack_stats)
 
 A webpack stats loader for integrating rails with wepack.
 
